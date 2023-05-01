@@ -1,27 +1,62 @@
 # Pipes
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.7.
+> where's mario when u need him ?? 
 
-## Development server
+- basic syntax:
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+```html
+{{height | number: "1.0-0" }}
+res: 1223.23223 -> 1,223
+```
 
-## Code scaffolding
+- with more than one argument
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```html
+{{amount | currency: "JOD" : "symbol" : "1.2-4" }}
+```
 
-## Build
+- chained together
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```html
+{{miles | convert : "km" | number: "1.0-2"}}
+```
 
-## Running unit tests
+---
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### custom pipes
 
-## Running end-to-end tests
+```bash
+ng g pipe <name>
+ng g pipe convert
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+will generate a pipe and hook it to `app.module` 
 
-## Further help
+you can do whatever u want in there:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+> it's still `js` so be **carful** of ***math***, or use `WASM` to handle it 
+
+```js
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'convert'
+})
+export class ConvertPipe implements PipeTransform {
+
+  transform(value: number, targetUnits:string): number {
+    if (value === undefined) return 0;
+    switch (targetUnits) {
+      case 'km':
+        return value * 1.60934;
+      case 'm':
+        return value * 1.60934 * 1000;
+      case 'cm':
+        return value * 1.60934 * 1000 * 1000;
+      default:
+        throw new Error('Target unit not supported')
+    }
+  }
+
+}
+```
